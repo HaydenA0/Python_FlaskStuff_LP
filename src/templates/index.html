@@ -4,59 +4,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VGG16 Image Classifier</title>
+    <title>AI Tools Dashboard</title>
+
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f5f5f5;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
             color: #333;
         }
-        .container {
+
+        .card {
+            width: 100%;
             max-width: 500px;
-            margin: auto;
+            background: #fff;
             padding: 30px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
             text-align: center;
         }
-        h1 {
+
+        h1, h2 {
+            margin-top: 0;
             color: #444;
         }
-        input[type="file"] {
-            display: block;
-            margin: 20px auto;
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
         }
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+
+        input[type="file"],
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
             width: 100%;
+            resize: none;
+            font-family: inherit;
         }
+
+        input[type="submit"] {
+            padding: 12px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
         input[type="submit"]:hover {
-            background-color: #45a049;
+            background: #45a049;
         }
-        .prediction {
+
+        .prediction, .chat-response {
             margin-top: 20px;
             padding: 15px;
             background-color: #e7f3fe;
             border-left: 6px solid #2196F3;
-            border-radius: 4px;
-        }
-        .uploaded-image {
-            margin-top: 20px;
-            max-width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+            border-radius: 6px;
+            text-align: left;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
+
+    <div class="card">
         <h1>VGG16 Image Classifier</h1>
 
         <form action="/predict" method="post" enctype="multipart/form-data">
@@ -72,85 +96,52 @@
         {% endif %}
 
         {% if image_path %}
-        <div>
-            <img src="{{ image_path }}" alt="Uploaded Image" class="uploaded-image">
+        <img src="{{ image_path }}" alt="Uploaded Image" class="uploaded-image">
+        {% endif %}
+    </div>
+
+
+    <div class="card">
+        <h2>Employee Salary Predictor</h2>
+
+        <form action="/regpredict" method="post">
+            <label for="experience">Experience (word or number):</label>
+            <input type="text" id="experience" name="experience" placeholder="e.g. two, 5, seven" required>
+
+            <label for="test_score">Test Score (0–10):</label>
+            <input type="number" id="test_score" name="test_score" min="0" max="10" step="any" required>
+
+            <label for="interview_score">Interview Score (0–10):</label>
+            <input type="number" id="interview_score" name="interview_score" min="0" max="10" step="any" required>
+
+            <input type="submit" value="Predict Salary">
+        </form>
+
+        {% if prediction_text %}
+        <div class="prediction">
+            <strong>{{ prediction_text }}</strong>
         </div>
         {% endif %}
     </div>
-</body>
 
-  <hr style="margin:40px 0;">
 
-  <style>
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        background: #f5f5f5; /* optional */
-    }
+    <div class="card">
+        <h2>AI Chat / Text Generator</h2>
 
-    .container {
-        text-align: center;
-        width: 350px;
-        background: white; /* optional */
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* optional */
-    }
+        <form action="/textgen" method="post">
+            <label for="user_prompt">Ask something:</label>
+            <textarea name="user_prompt" id="user_prompt" rows="4" placeholder="Type your question..." required></textarea>
+            <input type="submit" value="Generate Response">
+        </form>
 
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 25px;
-    }
-
-    input[type="text"],
-    input[type="number"] {
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
-
-    input[type="submit"] {
-        padding: 10px;
-        border: none;
-        background: #4CAF50;
-        color: white;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .prediction {
-        margin-top: 15px;
-    }
-</style>
-
-<div class="container">
-    <h2>Employee Salary Predictor</h2>
-
-    <form action="/regpredict" method="post">
-
-        <label for="experience">Experience (word or number):</label>
-        <input type="text" name="experience" id="experience" placeholder="e.g. two, 5, seven" required>
-
-        <label for="test_score">Test Score (0–10):</label>
-        <input type="number" name="test_score" id="test_score" min="0" max="10" step="any" required>
-
-        <label for="interview_score">Interview Score (0–10):</label>
-        <input type="number" name="interview_score" id="interview_score" min="0" max="10" step="any" required>
-
-        <input type="submit" value="Predict Salary">
-    </form>
-
-    {% if prediction_text %}
-    <div class="prediction">
-        <strong>{{ prediction_text }}</strong>
+        {% if generated_text %}
+        <div class="chat-response">
+            <strong>Response:</strong><br><br>
+            {{ generated_text }}
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 
-
+</body>
 </html>
+

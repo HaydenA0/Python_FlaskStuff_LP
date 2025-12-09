@@ -7,10 +7,11 @@ from keras.applications.vgg16 import decode_predictions
 from keras.applications.vgg16 import VGG16
 import werkzeug.utils
 import numpy as np
-
 import joblib
+import transformers
 
 
+GENERATOR = transformers.pipeline("text-generation", model="gpt2")
 MODEL_IMAGE_CLASSIFICATION = VGG16()
 MODEL_REGRESSION = joblib.load("./models/model.joblib")
 
@@ -77,6 +78,13 @@ def predict_regression(model=MODEL_REGRESSION):
 def request_file(filename):
     full_images_dir = os.path.join(os.path.dirname(__file__), "images")
     return flask.send_from_directory(full_images_dir, filename)
+
+
+@app.route("/textgen", methods=["POST"])
+def chat_gpt():
+    prompt = flask.request.form["user_prompt"]
+    generated_text = GENERATOR(prompt, max_length=300)[0]["generated_text"]
+    return flask.render_template("index.html", generated_text=generated_text)
 
 
 if __name__ == "__main__":
