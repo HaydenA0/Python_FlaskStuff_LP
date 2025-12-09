@@ -6,8 +6,14 @@ from keras.applications.vgg16 import preprocess_input
 from keras.applications.vgg16 import decode_predictions
 from keras.applications.vgg16 import VGG16
 import werkzeug.utils
+import numpy as np
 
-MODEL = VGG16()
+import joblib
+
+
+MODEL_IMAGE_CLASSIFICATION = VGG16()
+MODEL_REGRESSION = joblib.load("./models/model.joblib")
+
 ALLOWED_EXTENSIONS = {"png", "jpeg", "jpg", "jpeg"}
 
 app = flask.Flask(__name__)
@@ -27,7 +33,7 @@ def predict():
         image_file_name = werkzeug.utils.secure_filename(str(image_file.filename))
         image_path = "./src/images/" + image_file_name
         image_file.save(image_path)
-        prediction_string = classify_image(image_path, model=MODEL)
+        prediction_string = classify_image(image_path, model=MODEL_IMAGE_CLASSIFICATION)
         return flask.render_template(
             "index.html",
             prediction=prediction_string,
@@ -52,6 +58,19 @@ def classify_image(image_path, model):
     label_decoded = decode_predictions(prediction)
     label = label_decoded[0][0]
     return f"Object : {label[1]}, Confidence : {float(label[2]) * 100 :.2f}"
+
+
+@app.route("/regpredict", methods=["POST"])
+def predict_regression(model=MODEL_REGRESSION):
+    int_features = [int(x) for x in flask.request.form.values()]
+    final_features = [np.array(int_features)]
+    prediction = model.predict(final_features)
+
+    output = round(prediction[0], 2)
+
+    return flask.render_template(
+        "index.html", prediction_text="Employee Salary should be $ {}".format(output)
+    )
 
 
 @app.route("/images/<filename>")
