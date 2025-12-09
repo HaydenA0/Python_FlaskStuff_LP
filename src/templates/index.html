@@ -1,1 +1,81 @@
 <!-- This is vibe coded I know ... I dont know html  -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VGG16 Image Classifier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #444;
+        }
+        input[type="file"] {
+            display: block;
+            margin: 20px auto;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .prediction {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            border-radius: 4px;
+        }
+        .uploaded-image {
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VGG16 Image Classifier</h1>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label for="imagefile">Upload an image:</label>
+            <input type="file" name="imagefile" id="imagefile" accept="image/*" required>
+            <input type="submit" value="Classify Image">
+        </form>
+
+        {% if prediction %}
+        <div class="prediction">
+            <strong>Prediction:</strong> {{ prediction }}
+        </div>
+        {% endif %}
+
+        {% if image_path %}
+        <div>
+            <img src="{{ image_path }}" alt="Uploaded Image" class="uploaded-image">
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+
