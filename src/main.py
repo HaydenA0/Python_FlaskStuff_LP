@@ -13,12 +13,12 @@ ALLOWED_EXTENSIONS = {"png", "jpeg", "jpg", "jpeg"}
 app = flask.Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 def main():
     return flask.render_template("index.html")
 
 
-@app.route("/", methods=["POST"])
+@app.route("/predict", methods=["POST"])
 def predict():
     image_file = flask.request.files["imagefile"]
     if not check_validation(str(image_file.filename)):
