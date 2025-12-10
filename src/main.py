@@ -82,6 +82,7 @@ def request_file(filename):
 
 @app.route("/textgen", methods=["POST"])
 def chat_gpt():
+    # TODO : make it behave like a chat, actual chat
     prompt = flask.request.form["user_prompt"]
     generated_text = GENERATOR(prompt, max_length=300)[0]["generated_text"]
     return flask.render_template("index.html", generated_text=generated_text)
